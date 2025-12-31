@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world_flutter/screens/home_page.dart';
-import 'package:hello_world_flutter/screens/states/home_page_state.dart';
+import 'package:hello_world_flutter/screens/home/home_page.dart';
+import 'package:hello_world_flutter/screens/home/states/home_page_state.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
