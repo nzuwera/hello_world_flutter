@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world_flutter/big_card.dart';
+import 'package:hello_world_flutter/screens/counter/counter_page.dart';
 import 'package:hello_world_flutter/screens/favorites/favorites_page.dart';
 import 'package:hello_world_flutter/screens/home/states/home_page_state.dart';
 import 'package:provider/provider.dart';
@@ -20,45 +21,50 @@ class _HomePageState extends State<HomePage> {
         page = GeneratorPage();
       case 1:
         page = FavoritesPage();
+      case 2:
+        page = CounterPage();
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError('No widget for $selectedIndex');
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                  ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
-              ),
-            ],
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Hello World Flutter",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-        );
-      },
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Theme.of(context).primaryColorLight,
+      ),
+      body: Container(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        child: page,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (value) {
+          setState(() {
+            selectedIndex = value;
+          });
+        },
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.add_box_rounded),
+            label: 'Count',
+          ),
+        ],
+      ),
     );
   }
 }
@@ -88,7 +94,7 @@ class GeneratorPage extends StatelessWidget {
                 icon: Icon(icon),
                 label: Text("Like"),
               ),
-              SizedBox(height: 10),
+              SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
                   appState.getNext();
