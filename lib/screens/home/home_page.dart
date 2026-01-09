@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_world_flutter/big_card.dart';
 import 'package:hello_world_flutter/screens/counter/counter_page.dart';
 import 'package:hello_world_flutter/screens/favorites/favorites_page.dart';
+import 'package:hello_world_flutter/screens/form/form_page.dart';
 import 'package:hello_world_flutter/screens/home/states/home_page_state.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,8 @@ class _HomePageState extends State<HomePage> {
         page = FavoritesPage();
       case 2:
         page = CounterPage();
+      case 3:
+        page = FormPage();
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }
@@ -62,6 +65,10 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
             icon: Icon(Icons.add_box_rounded),
             label: 'Count',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.note_alt),
+            label: 'Form',
           ),
         ],
       ),
