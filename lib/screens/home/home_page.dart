@@ -4,6 +4,7 @@ import 'package:hello_world_flutter/screens/counter/counter_page.dart';
 import 'package:hello_world_flutter/screens/favorites/favorites_page.dart';
 import 'package:hello_world_flutter/screens/form/form_page.dart';
 import 'package:hello_world_flutter/screens/home/states/home_page_state.dart';
+import 'package:hello_world_flutter/screens/person/person_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,6 +27,8 @@ class _HomePageState extends State<HomePage> {
         page = CounterPage();
       case 3:
         page = FormPage();
+      case 4:
+        page = PersonPage();
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }
@@ -55,20 +58,24 @@ class _HomePageState extends State<HomePage> {
         },
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.favorite_outline),
             label: 'Favorites',
           ),
           NavigationDestination(
-            icon: Icon(Icons.add_box_rounded),
+            icon: Icon(Icons.add_box_outlined),
             label: 'Count',
           ),
           NavigationDestination(
-            icon: Icon(Icons.note_alt),
+            icon: Icon(Icons.note_alt_outlined),
             label: 'Form',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.people_alt_outlined),
+            label: 'People',
           ),
         ],
       ),
