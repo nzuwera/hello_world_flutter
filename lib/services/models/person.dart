@@ -4,13 +4,10 @@ class Person {
 
   const Person({required this.name, required this.surname});
 
-  factory Person.fronJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {'name': String name, 'surname': String surname} => Person(
-        name: name,
-        surname: surname,
-      ),
-      _ => throw const FormatException("Failed to load Person"),
-    };
-  }
+  Person.fromJson(Map<String, dynamic> json)
+  : name = json['name'], surname = json['surname'];
+
+  static Map<String, dynamic> toJson (Person value) =>
+      {"name": value.name, "surname": value.surname};
+
 }

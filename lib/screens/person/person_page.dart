@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world_flutter/services/backend_services.dart';
+import 'package:hello_world_flutter/screens/person/forms/person_form.dart';
+import 'package:hello_world_flutter/services/person_services.dart';
 import 'package:hello_world_flutter/services/models/person.dart';
 
 class PersonPage extends StatefulWidget {
@@ -10,67 +11,96 @@ class PersonPage extends StatefulWidget {
 }
 
 class _PersonPageState extends State<PersonPage> {
-  List<Person>? _personList;
+  List<Person>? _personList = [];
+
+ @override
+  void initState() {
+        super.initState();
+        _loadPersons();
+  }
+
+  Future<void> _loadPersons() async {
+    try {
+      final persons = await PersonServices().fetchPersons();
+      setState(() {
+        _personList = persons;
+      });
+    } catch (e) {
+      // Handle error if needed
+      print('Error loading persons: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Theme.of(context).primaryColorLight,
-              minimumSize: Size(double.infinity, 32),
-            ),
-            onPressed: () async {
-              final persons = await BackendServices().fetchPersons();
-              setState(() {
-                _personList = persons;
-              });
-            },
-            child: Text(
-              "Get People",
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
+          child: PersonForm(),
+        ),
+        SizedBox(height: 15),
+        if (_personList != null && _personList!.isNotEmpty)
+          _buildPersonsListView(context,_personList!),
+      ],
+    );
+  }
+
+  Widget _buildPersonsListView(BuildContext context, List<Person> personsList) {
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.all(10),
+        scrollDirection: Axis.vertical,
+        itemCount: personsList.length,
+        itemBuilder: (_, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: Text(
+                    personsList[index].name[0],
+                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary
+                    ),
+                  ),
+                ),
+                title: Text(
+                  personsList[index].name,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.primary
+                  ),
+                ),
+                subtitle: Text(
+                  "${personsList[index].name} ${personsList[index].surname}",
+                ),
+                trailing: IconButton(
+                  color: Colors.redAccent,
+                  icon: Icon(Icons.delete_outlined),
+                  onPressed: () async {
+                    try {
+                      final updatedList = await PersonServices()
+                          .deletePerson(personsList[index].surname);
+                      setState(() {
+                        _personList = updatedList;
+                      });
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to delete person: $e')),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
-          ),
-        ),
-        SizedBox(height: 10),
-        if (_personList != null && _personList!.isNotEmpty)
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _personList!.length,
-              itemBuilder: (_, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Text(
-                      _personList![index].name[0],
-                      style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    _personList![index].name,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.primary
-                    ),
-                  ),
-                  subtitle: Text(
-                    "${_personList![index].name} ${_personList![index].surname}",
-                  ),
-                  trailing: Icon(Icons.delete_outlined),
-                );
-              },
-            ),
-          ),
-      ],
+          );
+        },
+      ),
     );
   }
 }
